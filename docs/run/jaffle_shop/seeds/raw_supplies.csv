@@ -1,0 +1,11 @@
+
+    
+    
+    truncate table "dev"."external"."raw_supplies";
+    -- dbt seed --
+    
+          COPY "dev"."external"."raw_supplies" FROM 'D:\GitHub\dbt-flow\_context\jaffle_shop\seeds\raw_supplies.csv' (FORMAT CSV, HEADER TRUE, DELIMITER ',')
+        
+
+;
+  
