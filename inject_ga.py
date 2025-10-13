@@ -1,8 +1,7 @@
 """
-Copy dbt docs from target/ to docs/ and inject Google Analytics tag
+Inject Google Analytics tag into dbt docs index.html
 """
 import re
-import shutil
 from pathlib import Path
 
 # Google Analytics tag
@@ -15,35 +14,6 @@ GA_TAG = """<!-- Google tag (gtag.js) -->
 
   gtag('config', 'G-XXKMP3JBB6');
 </script>"""
-
-def copy_dbt_docs(source_dir: Path, dest_dir: Path):
-    """Copy necessary files from target/ to docs/"""
-    required_files = ['index.html', 'catalog.json', 'manifest.json']
-    required_dirs = ['compiled', 'run']
-
-    print(f"Copying dbt docs from {source_dir} to {dest_dir}...")
-
-    # Create destination directory if it doesn't exist
-    dest_dir.mkdir(exist_ok=True)
-
-    # Copy required files
-    for filename in required_files:
-        source_file = source_dir / filename
-        if source_file.exists():
-            shutil.copy2(source_file, dest_dir / filename)
-            print(f"  Copied {filename}")
-        else:
-            print(f"  Warning: {filename} not found in {source_dir}")
-
-    # Copy required directories
-    for dirname in required_dirs:
-        source_subdir = source_dir / dirname
-        dest_subdir = dest_dir / dirname
-        if source_subdir.exists():
-            if dest_subdir.exists():
-                shutil.rmtree(dest_subdir)
-            shutil.copytree(source_subdir, dest_subdir)
-            print(f"  Copied {dirname}/")
 
 def inject_ga_tag(index_path: Path):
     """Inject GA tag into the <head> section of index.html"""
@@ -77,15 +47,11 @@ def inject_ga_tag(index_path: Path):
     return True
 
 if __name__ == "__main__":
-    # Define paths
-    target_dir = Path("target")
-    docs_dir = Path("docs")
-
-    # Copy files from target/ to docs/
-    copy_dbt_docs(target_dir, docs_dir)
-
     # Inject GA tag into docs/index.html
-    docs_index = docs_dir / "index.html"
-    inject_ga_tag(docs_index)
+    docs_index = Path("docs/index.html")
 
-    print("\nDone! docs/ folder is ready for GitHub Pages deployment.")
+    if inject_ga_tag(docs_index):
+        print("Done! GA tag injected successfully.")
+    else:
+        print("Failed to inject GA tag.")
+        exit(1)

@@ -9,7 +9,9 @@ if exist docs (
     rmdir /s /q docs
     echo   Deleted docs folder
 )
-mkdir docs
+if not exist docs (
+    mkdir docs
+)
 echo   Created clean docs folder
 
 echo.
@@ -22,15 +24,35 @@ if errorlevel 1 (
 echo   Documentation generated in target/
 
 echo.
-echo Step 3: Copying docs and injecting Google Analytics...
+echo Step 3: Copying all files from target/ to docs/...
+xcopy /E /I /Y target\* docs\
+echo   Copied all target/ contents to docs/
+
+echo.
+echo Step 4: Injecting Google Analytics tag...
 python inject_ga.py
 if errorlevel 1 (
     echo   Error: inject_ga.py failed!
     exit /b 1
 )
 
+echo.
+echo Step 5: Committing changes...
+git add docs/
+git commit -m "update docs"
+if errorlevel 1 (
+    echo   No changes to commit or commit failed
+)
+
+echo.
+echo Step 6: Pushing to GitHub...
+git push
+if errorlevel 1 (
+    echo   Error: git push failed!
+    exit /b 1
+)
 
 echo.
 echo ============================================
-echo Deployment staged - please commit and push the changes to Deploy
+echo Deployment complete!
 echo ============================================
