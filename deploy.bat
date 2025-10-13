@@ -35,24 +35,8 @@ if errorlevel 1 (
     echo   Error: inject_ga.py failed!
     exit /b 1
 )
-
-echo.
-echo Step 5: Committing changes...
-git add docs/
-git commit -m "update docs"
-if errorlevel 1 (
-    echo   No changes to commit or commit failed
-)
-
-echo.
-echo Step 6: Pushing to GitHub...
-git push
-if errorlevel 1 (
-    echo   Error: git push failed!
-    exit /b 1
-)
-
+ 
 echo.
 echo ============================================
-echo Deployment complete!
+echo Deployment staged - you can now commit and push to deploy
 echo ============================================
