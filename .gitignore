@@ -11,3 +11,5 @@ venv/
 env/
 **/*.duckdb
 **/*.duckdb.wal
+*.pyc
+/.tmp_dagster_home_avkggtm_
